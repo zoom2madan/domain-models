@@ -1,0 +1,55 @@
+---
+package: Organizations
+tables:
+  - Organization
+  - Branch
+  - Employee
+  - Department
+
+---
+package: Customers
+tables:
+  - Parent
+  - Student
+  - StudentParentRel
+
+---
+package: Institutions
+tables:
+  - Country
+  - University
+  - Campus
+  - CourseCategory
+  - Course
+  - UniversityRanking
+  - UniversityCourseCategoryRanking
+  - Intake
+
+---
+package: ServiceBlueprint
+tables:
+  - Process
+  - ProcessStep
+  - TaskType
+  - Task
+  - Meeting
+  - Interview
+  - Document
+  - DocumentMetaData
+  - DocumentType
+
+---
+package: ServiceDelivery
+tables:
+  - StudentCountryRel
+  - StudentUniversityRel
+  - StudentCourseRel
+  - StudentIntakeRel
+  - StudentProcess
+  - StudentProcessStep
+  - StudentProcessStepStatus
+  - StudentTask
+  - StudentMeeting
+  - StudentInterview
+  - StudentDocument
+  - StudentDocumentMetaData

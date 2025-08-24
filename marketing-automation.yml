@@ -1,0 +1,157 @@
+---
+package: ContactManagement
+entities:
+  - Contact:
+      description: "Central customer/prospect entity that stores email, phone, name, company, status, source, timezone, and language. Tracks creation, last update, and last activity timestamps. Handles status management (active, inactive, bounced, unsubscribed) for comprehensive contact lifecycle management."
+  - ContactSegment:
+      description: "Dynamic and static contact grouping that supports both manual segments and rule-based dynamic segments. Stores segmentation criteria as JSON for flexible querying and tracks creator and modification history."
+  - ContactSegmentRel:
+      description: "Many-to-many contact-segment relationship table that links contacts to multiple segments with timestamp tracking. Supports audit trail for segment additions and membership changes."
+  - ContactPreferences:
+      description: "Communication consent and preferences management with per-channel opt-in/opt-out status (email, SMS, WhatsApp, push). Includes compliance tracking with opt-in/out dates and sources, plus frequency preferences for each communication channel."
+  - ContactTag:
+      description: "Flexible contact labeling system that supports color-coded tags for visual organization. Provides reusable tags across multiple contacts for categorization and filtering. Example: LeadStatus: Hot, Cold, Qualified, MQL, SQL. Industry: Healthcare, Technology, Finance, Education, Manufacturing. CompanySize: Enterprise, SMB, Startup, Fortune500. Behavioral: HighEngagement, EmailOpener, LinkClicker, WebsiteVisitor, EventAttendee. Journey: Prospect, Customer, Churned, Onboarding, RenewalDue. Geographic: NorthAmerica, EMEA, APAC, Remote. Interest: ProductDemo, PricingInquiry, Newsletter, FreeTrial. Campaign: BlackFriday2024, WebinarQ1, TradeShow, ContentDownload. Priority: VIP, DecisionMaker, Champion, Influencer."
+  - ContactTagRel:
+      description: "Many-to-many contact-tag relationship table that tracks who assigned tags and when for audit purposes. Enables flexible contact categorization and filtering."
+  - ContactCustomField:
+      description: "Dynamic contact attributes that support multiple data types (text, number, date, boolean, JSON). Provides flexible schema for storing industry-specific contact data and custom properties."
+  - ContactNote:
+      description: "Internal contact annotations with private and shared notes capability. Tracks creator and maintains communication history and context for team collaboration."
+
+---
+package: CampaignManagement
+entities:
+  - Campaign:
+      description: "Main campaign orchestration entity that supports multiple campaign types (one-time, recurring, drip sequences, trigger-based). Handles status management throughout campaign lifecycle, target segment specification and goal tracking, with date/time scheduling and timezone support."
+  - CampaignMessage:
+      description: "Individual messages within campaigns that support multi-step sequences with message ordering. Includes channel-specific configuration per message, personalization rules stored as JSON for flexible dynamic content, and delivery scheduling with status tracking."
+  - MessageTemplate:
+      description: "Reusable message content templates with channel-agnostic template system and variable definitions. Supports HTML, text, and JSON content formats with merge tag system for dynamic personalization. Includes version control and approval workflows."
+  - MessageVariant:
+      description: "A/B testing support with multiple variants per message for testing different approaches. Features percentage-based traffic allocation and control group management for statistical significance."
+
+---
+package: CommunicationChannels
+entities:
+  - CommunicationChannel:
+      description: "Channel type definitions with extensible channel system (email, SMS, WhatsApp, push, web push). Features channel-specific configuration stored as JSON and active/inactive status management."
+  - ChannelProvider:
+      description: "Third-party service integrations with multiple providers per channel for redundancy and cost optimization. Includes encrypted API credential storage, rate limiting and priority ordering for failover, plus provider-specific configuration management."
+
+---
+package: MessageDelivery
+entities:
+  - MessageQueue:
+      description: "Message delivery queue management that stores personalized content for each recipient. Features priority-based delivery scheduling, provider selection and load balancing, with comprehensive status tracking from queue to completion."
+  - MessageDelivery:
+      description: "Delivery attempt tracking that links to external provider message IDs for tracking. Includes comprehensive delivery status management, bounce and failure reason capture, with retry logic using exponential backoff."
+  - MessageInteraction:
+      description: "Engagement tracking with multi-type interaction support (opens, clicks, replies, forwards). Captures device and location data for analytics, stores interaction metadata as JSON for flexibility, and provides timestamp precision for engagement analysis."
+
+---
+package: WebsiteVisitorTracking
+entities:
+  - Visitor:
+      description: "Core visitor entity for anonymous and identified users with UUID-based tracking for GDPR compliance. Features comprehensive device and location fingerprinting, UTM parameter capture for attribution tracking, and identification status management for anonymous-to-known conversion."
+  - VisitorSession:
+      description: "Individual website sessions with session duration and bounce rate tracking. Includes entry/exit page analysis for funnel optimization, device fingerprinting for bot detection and security, plus real-time session state management."
+  - VisitorPageView:
+      description: "Detailed page interaction tracking with time on page and scroll depth for engagement measurement. Features page performance and user experience analytics, referrer tracking for traffic source analysis, and exit page identification for conversion optimization."
+  - VisitorEvent:
+      description: "Custom event and action tracking with flexible event taxonomy (category, action, label). Supports numeric value tracking for revenue attribution, custom properties stored as JSON for extensibility, and conversion funnel and goal tracking."
+  - VisitorIdentification:
+      description: "Anonymous-to-known visitor linking with multiple identification methods (email capture, login, purchase). Features confidence scoring for fuzzy visitor matching, historical behavior preservation after identification, and cross-device visitor unification."
+
+---
+package: PersonalizationEngine
+entities:
+  - PersonalizationRule:
+      description: "Dynamic content personalization rules with condition-based triggering using visitor behavior data. Supports multiple action types (content, popup, redirect, email trigger), priority-based rule execution for complex scenarios, and A/B testing integration for personalization optimization."
+  - VisitorPersonalizationLog:
+      description: "Personalization delivery tracking with applied personalization audit trail. Features content variation tracking for performance analysis, interaction result measurement (views, clicks, conversions), and ROI calculation for personalization effectiveness."
+  - VisitorScore:
+      description: "Behavioral lead scoring system with multiple scoring models (engagement, purchase intent, lead quality). Includes factor breakdown for score explanation and optimization, time-based score decay for recency weighting, and integration with marketing automation triggers."
+  - VisitorCookie:
+      description: "Cookie and tracking management with multi-domain cookie support for enterprise websites. Features expiration and cleanup management for privacy compliance, cookie consent integration for GDPR/CCPA compliance, and cross-subdomain visitor tracking capability."
+
+---
+package: AutomationWorkflow
+entities:
+  - AutomationWorkflow:
+      description: "Main workflow orchestration entity that supports multiple workflow types (nurture, onboarding, re-engagement, behavioral). Features flexible trigger system with JSON-based condition storage, workflow lifecycle management with enrollment tracking, and performance metrics with analytics integration."
+  - WorkflowStep:
+      description: "Individual workflow step definitions with extensible step types (message, wait, condition, tag, field update, webhook). Includes configurable delays with multiple time units, JSON-based configuration for step-specific parameters, and sequential ordering with branching capabilities."
+  - WorkflowTrigger:
+      description: "Event-based workflow initiation with multi-trigger support per workflow for complex scenarios. Features real-time and batch trigger processing, condition-based filtering before enrollment, and integration with visitor tracking and contact events."
+  - WorkflowCondition:
+      description: "Decision logic for workflow branching with complex conditional logic and multiple operators. Supports field-based, behavioral, and time-based conditions, true/false path routing for personalized journeys, and dynamic condition evaluation with real-time data."
+
+---
+package: WorkflowExecution
+entities:
+  - ContactWorkflowRel:
+      description: "Many-to-many contact-workflow relationship table that manages contact enrollment and journey state. Features status management (active, completed, failed, cancelled, paused), scheduling system for delayed step execution, and completion percentage for progress monitoring."
+  - WorkflowStepExecution:
+      description: "Step-level execution tracking with detailed execution results and error handling. Includes retry logic with configurable attempts, performance metrics per step for optimization, and audit trail for workflow debugging and analysis."
+  - WorkflowGoal:
+      description: "Conversion and success measurement with multiple goal types (conversion, engagement, revenue, custom). Features flexible goal conditions with JSON-based definitions, value tracking for ROI calculation, and attribution modeling for workflow effectiveness."
+  - ContactWorkflowGoalRel:
+      description: "Many-to-many contact-workflow-goal relationship table that tracks goal completion and achievement. Includes step-level attribution for conversion analysis, achievement value capture for revenue tracking, timing analysis for conversion optimization, and integration with analytics and reporting systems."
+
+---
+package: AdvancedAutomation
+entities:
+  - WorkflowVariable:
+      description: "Dynamic data management with contact field integration for personalization. Features calculated variables for complex logic, external API data integration capabilities, and default value management for error handling."
+  - WorkflowWebhook:
+      description: "External system integration with RESTful API integration and configurable authentication. Includes retry logic with exponential backoff, payload templating with dynamic variable substitution, and timeout and error handling for reliable integrations."
+
+---
+package: AnalyticsPerformance
+entities:
+  - CampaignAnalytics:
+      description: "Campaign-level performance aggregation with daily/periodic metric rollups for fast querying. Features comprehensive engagement metrics (opens, clicks, conversions), cost and ROI calculation with revenue attribution, and benchmark comparison with trend analysis."
+  - MessageAnalytics:
+      description: "Individual message performance tracking with A/B test variant performance comparison. Includes device and platform breakdown for optimization, engagement scoring with predictive insights, and optimal send time analysis for future campaigns."
+  - ContactEngagementMetrics:
+      description: "Per-contact engagement profiling with cross-channel engagement consolidation. Features engagement trend analysis for churn prediction, lifetime value calculation with predictive modeling, and behavioral segmentation based on engagement patterns."
+  - ChannelPerformance:
+      description: "Communication channel optimization with channel-specific delivery and engagement rates. Includes cost analysis and ROI by channel, optimal timing analysis for each channel, and performance benchmarking across channels."
+
+---
+package: AttributionConversion
+entities:
+  - ConversionGoal:
+      description: "Conversion definition and tracking setup with flexible goal types and custom event support. Features monetary value assignment for ROI calculation, attribution window configuration for accurate tracking, and multi-method tracking (pixel, API, webhook) support."
+  - ConversionEvent:
+      description: "Individual conversion instance tracking with complete conversion path capture from first touch to conversion. Features multi-source attribution with weighted contribution, custom property storage for detailed conversion analysis, and real-time conversion tracking with batch processing."
+  - TouchpointAttribution:
+      description: "Multi-touch attribution modeling with comprehensive touchpoint journey mapping. Features configurable attribution weights for different models, time-to-conversion analysis for optimization insights, and cross-channel touchpoint correlation analysis."
+
+---
+package: RevenueROI
+entities:
+  - RevenueAttribution:
+      description: "Revenue tracking and attribution with multiple attribution models (first-touch, last-touch, linear, time-decay). Features cross-campaign and workflow revenue attribution, currency handling for multi-region operations, and percentage-based attribution for shared conversions."
+  - CampaignROI:
+      description: "Return on investment calculation with comprehensive cost tracking including operational expenses. Features customer acquisition cost and lifetime value analysis, payback period calculation for investment planning, and profit margin analysis for campaign optimization."
+
+---
+package: ReportingInsights
+entities:
+  - Report:
+      description: "Saved reports and dashboard configuration with flexible report builder and custom metrics and filters. Features multiple report types for different stakeholder needs, JSON-based configuration for extensible reporting, and version control for report template management."
+  - ReportSchedule:
+      description: "Automated report distribution with multi-recipient report delivery and role-based access. Features flexible scheduling with timezone support, automated insights generation and anomaly detection, and integration with external BI tools and dashboards."
+
+---
+package: SystemConfiguration
+entities:
+  - User:
+      description: "System users and access management for marketing team members, administrators, and API users. Features role-based permissions and access control with activity tracking and session management."
+  - MediaAsset:
+      description: "Digital asset management for images, videos, documents, and attachments for campaigns. Features version control and approval workflows with CDN integration and asset optimization."
+  - ConsentRecord:
+      description: "Privacy compliance and consent management with GDPR/CCPA compliance and detailed consent tracking. Features opt-in/opt-out history with legal audit trails and data processing purpose tracking."
+  - AuditLog:
+      description: "System activity and security tracking with complete audit trail for all system changes. Features user activity monitoring and security compliance with data access logging for privacy compliance."

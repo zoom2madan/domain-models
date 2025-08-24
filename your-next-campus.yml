@@ -1,6 +1,6 @@
 ---
 package: Organizations
-tables:
+entities:
   - Organization
   - Branch
   - Employee
@@ -8,14 +8,14 @@ tables:
 
 ---
 package: Customers
-tables:
+entities:
   - Parent
   - Student
   - StudentParentRel
 
 ---
 package: Institutions
-tables:
+entities:
   - Country
   - University
   - Campus
@@ -27,7 +27,7 @@ tables:
 
 ---
 package: ServiceBlueprint
-tables:
+entities:
   - Process
   - ProcessStep
   - TaskType
@@ -40,7 +40,7 @@ tables:
 
 ---
 package: ServiceDelivery
-tables:
+entities:
   - StudentCountryRel
   - StudentUniversityRel
   - StudentCourseRel
